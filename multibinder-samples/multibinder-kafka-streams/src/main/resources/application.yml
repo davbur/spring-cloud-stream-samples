@@ -1,0 +1,50 @@
+spring:
+  cloud:
+    stream:
+      bindings:
+        input:
+          destination: dataIn
+          binder: kafka1
+          group: testGroup
+        output:
+          destination: dataOut
+          binder: kafka2
+        #Test sink binding (used for testing)
+        output1:
+          destination: dataIn
+          binder: kafka1
+        #Test sink binding (used for testing)
+        input1:
+          destination: dataOut
+          binder: kafka2
+        input2:
+          destination: foobar
+          binder: kafka2
+      binders:
+        kafka1:
+         type: kafka
+         environment:
+           spring:
+             cloud:
+               stream:
+                kafka:
+                  binder:
+                    brokers: ${kafkaBroker1}
+                    zkNodes: ${zk1}
+        kafka2:
+         type: kafka
+         environment:
+           spring:
+             cloud:
+               stream:
+                 kafka:
+                   binder:
+                     brokers: ${kafkaBroker2}
+                     zkNodes: ${zk2}
+                 streams:
+                   binder:
+                     brokers: ${kafkaBroker2}
+                     configuration:
+                       default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                       default.value.serde: org.apache.kafka.common.serialization.Serdes$BytesSerde
+                       commit.interval.ms: 1000
